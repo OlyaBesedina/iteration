@@ -1,0 +1,196 @@
+---
+title: "Iteration and List Columns"
+author: "Olya Besedina"
+data: "10/29/2019"
+output: github_document
+---
+  
+```{r setup, include=FALSE}
+library(tidyverse)
+library(rvest)
+
+knitr::opts_chunk$set(
+ 	echo = TRUE,
+ 	warning = FALSE,
+ 	fig.width = 8, 
+   fig.height = 6,
+   out.width = "90%"
+ )
+
+options(
+   ggplot2.continuous.colour = "viridis",
+   ggplot2.continuous.fill = "viridis"
+ )
+
+ scale_colour_discrete = scale_colour_viridis_d
+ scale_fill_discrete = scale_fill_viridis_d
+
+ theme_set(theme_minimal() + theme(legend.position = "bottom"))
+```
+
+
+```{r}
+
+set.seed(1)
+
+l = list(vec_numeric = 5:8,
+         mat         = matrix(1:8, 2, 4),
+         vec_logical = c(TRUE, FALSE),
+         summary     = summary(rnorm(1000)))
+```
+
+```{r}
+l$vec_numeric
+
+# pull out second thing on the list
+l[[2]]
+
+mean(l$vec_numeric)
+
+```
+
+```{r}
+df = list(
+  a = rnorm(20, 3, 1),
+  b = rnorm(20, 0, 5),
+  c = rnorm(20, 10, .2),
+  d = rnorm(20, -3, 1)
+)
+
+df$a
+df[[2]]
+
+```
+
+```{r}
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("Cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+
+  tibble(
+    mean = mean_x, 
+    sd = sd_x
+  )
+}
+```
+
+```{r}
+mean_and_sd(df[[1]])
+mean_and_sd(df[[2]])
+mean_and_sd(df[[3]])
+mean_and_sd(df[[4]])
+```
+
+create loops 
+
+```{r}
+output = vector("list", length = 4)
+
+```
+
+Create first loop
+
+```{r}
+for (i in 1:4) {
+  
+  output[[i]] = mean_and_sd(df[[i]])
+  
+}
+
+output
+```
+
+Change for loop to map statement 
+
+```{r}
+output = map(df, mean_and_sd)
+
+output_median = map (df, median)
+
+output_summary = map(df, summary)
+
+output = map_dbl(df, median)
+output = map_dfr(df, mean_and_sd)
+```
+
+```{r, eval = FALSE}
+output = map(df, -mean_and_sd(.x))
+
+```
+
+Napoleon
+```{r}
+library(rvest)
+
+read_page_reviews = function(url) {
+  
+  h = read_html(url)
+  
+  title = h %>%
+    html_nodes("#cm_cr-review_list .review-title") %>%
+    html_text()
+  
+  stars = h %>%
+    html_nodes("#cm_cr-review_list .review-rating") %>%
+    html_text() %>%
+    str_extract("\\d") %>%
+    as.numeric()
+  
+  text = h %>%
+    html_nodes(".review-data:nth-child(5)") %>%
+    html_text()
+  
+  data_frame(title, stars, text)
+}
+
+```
+
+```{r}
+url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
+vec_urls = str_c(url_base, 1:5)
+
+vec_url = str_c(url_base, 1:5)
+
+read_page_reviews(vec_url[[1]])
+read_page_reviews(vec_url[[2]])
+read_page_reviews(vec_url[[3]])
+read_page_reviews(vec_url[[4]])
+read_page_reviews(vec_url[[5]])
+
+#write a loop
+
+output = vector("list", 5)
+
+for (i in 1:5) {
+  output[[i]] = read_page_reviews(vec_urls[[i]])
+}
+```
+
+Write a loop
+
+1.create empty output list
+2.create a loop
+
+Map
+
+```{r}
+output = map(vec_urls, read_page_reviews)
+```
+
+
+
+
+
+
+
+
+
+
+
