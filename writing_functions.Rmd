@@ -1,0 +1,289 @@
+---
+title: "Writing functions"
+author: "Olya Besedina"
+data: "10/24/2019"
+output: github_document
+---
+  
+```{r setup, include=FALSE}
+library(tidyverse)
+library(rvest)
+
+knitr::opts_chunk$set(
+ 	echo = TRUE,
+ 	warning = FALSE,
+ 	fig.width = 8, 
+   fig.height = 6,
+   out.width = "90%"
+ )
+
+options(
+   ggplot2.continuous.colour = "viridis",
+   ggplot2.continuous.fill = "viridis"
+ )
+
+ scale_colour_discrete = scale_colour_viridis_d
+ scale_fill_discrete = scale_fill_viridis_d
+
+ theme_set(theme_minimal() + theme(legend.position = "bottom"))
+```
+
+## Get started
+
+```{r}
+x = rnorm(n = 30, mean = 4, sd = 2.3)
+x_again = rnorm(n = 30, mean = 6, sd = .3)
+y = rnorm(n = 30, mean = 6, sd = .3)
+
+# z scores
+(x - mean (x)) / sd(x)
+(x_again - mean (x_again)) / sd(x_again)
+
+
+```
+
+Now a function
+
+```{r}
+z_score = function(x) {
+  
+  if(!is.numeric(x)) {
+    stop("x should be numeric")
+  } else if(length(x) < 3){
+    stop( "x should be longer than 3")
+  }
+  
+  (x - mean(x)) / sd(x)
+  
+}
+```
+
+Try out the function
+
+```{r, eval = FALSE}
+z_score(x = x_again)
+
+z_score(x = 3)
+z_score (x = "my name is jeff")
+z_score (x = c(TRUE, TRUE, FALSE, TRUE))
+z_score(x = iris)
+
+```
+
+## Multiple output
+
+```{r}
+mean_and_sd = function(input_x)
+{
+  
+  if(!is.numeric(x)) {
+    stop("x should be numeric")
+  } else if(length(x) < 3){
+    stop( "x should be longer than 3")
+  }
+
+  tibble(
+    mean_input = mean(input_x),
+    sd_input = sd(input_x)
+  ) 
+}
+
+```
+
+Thest the function
+```{r}
+mean_and_sd(input_x = x)
+```
+
+# list - allows you to combine any number of things into one output structure
+```{r}
+mean_and_sd_list = function(input_x)
+{
+  
+  if(!is.numeric(x)) {
+    stop("x should be numeric")
+  } else if(length(x) < 3){
+    stop( "x should be longer than 3")
+  }
+
+  list(
+    mean_input = mean(input_x),
+    sd_input = sd(input_x),
+    z_score = (input_x - mean(input_x)) / sd(input_x)
+  ) 
+}
+
+```
+
+# Multiple inputs
+
+y is relatd to x through the simple linear regression
+
+```{r}
+sim_data = tibble(
+  x = rnorm(30, mean = 1, sd = 1),
+  y = 2 + 3 * x + rnorm(30, 0, 1)
+)
+
+sim_data %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_point()
+
+ls_fit = lm(y ~ x, data = sim_data)
+  
+# estimated intercept:
+beta0_hat = coef(ls_fit)[1]
+# estimated slope
+beta1_hat = coef(ls_fit)[2]
+```
+
+
+By defauld beta0= 2, beta1 = 3 unles changed by the user
+
+```{r}
+sim_regression = function(n, beta0 = 2, beta1 = 3) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = 1, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n, 0, 1)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data)
+  
+  tibble(
+    beta0_hat = coef(ls_fit)[1],
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+
+sim_regression(n = 3000, beta0 = 17, beta1 = -3)
+
+# Can write in order without naming it
+sim_regression(3000, beta0 = 24)
+``` 
+
+
+# Scrape lots of napoleon
+
+```{r}
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+dynamite_html = read_html(url)
+
+review_titles = dynamite_html %>%
+  html_nodes("#cm_cr-review_list .review-title") %>%
+  html_text()
+
+review_stars = dynamite_html %>%
+  html_nodes("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+review_text = dynamite_html %>%
+  html_nodes(".review-text-content span") %>%
+  html_text()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+```
+
+Now as a function
+
+```{r}
+read_page_reviews = function(page_url) {
+  url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+dynamite_html = read_html(page_url)
+
+review_titles = dynamite_html %>%
+  html_nodes("#cm_cr-review_list .review-title") %>%
+  html_text()
+
+review_stars = dynamite_html %>%
+  html_nodes("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+review_text = dynamite_html %>%
+  html_nodes(".review-text-content span") %>%
+  html_text()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+
+reviews
+
+}
+
+read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1")
+
+read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=2")
+
+read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=3")
+
+read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=4")
+```
+
+# Lord of the rings data
+
+```{r, eval = FALSE}
+library(readxl)
+fellowship_ring = readxl::read_excel("./data/LotR_Words.xlsx", range = "B3:D6") %>%
+  mutate(movie = "fellowship_ring")
+
+two_towers = readxl::read_excel("./data/LotR_Words.xlsx", range = "F3:H6") %>%
+  mutate(movie = "two_towers")
+
+return_king = readxl::read_excel("./data/LotR_Words.xlsx", range = "J3:L6") %>%
+  mutate(movie = "return_king")
+
+lotr_tidy = bind_rows(fellowship_ring, two_towers, return_king) %>%
+  janitor::clean_names() %>%
+  gather(key = sex, value = words, female:male) %>%
+  mutate(race = str_to_lower(race)) %>% 
+  select(movie, everything()) 
+```
+
+As a function
+
+```{r}
+lotr_load_and_tidy = function(path, range, movie_name) {
+  
+  df = readxl::read_excel(path, range = range) %>%
+    janitor::clean_names() %>%
+    gather(key = sex, value = words, female:male) %>%
+    mutate(race = str_to_lower(race),
+           movie = movie_name)
+  
+  df
+  
+}
+
+lotr_tidy = 
+  bind_rows(
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "B3:D6", "fellowship_ring"),
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "F3:H6", "two_towers"),
+    lotr_load_and_tidy("./data/LotR_Words.xlsx", "J3:L6", "return_king")) %>%
+  select(movie, everything()) 
+```
+
+```{r}
+x = rnorm(25, 0, 1)
+
+my_summary = function(x, summ_func) {
+  summ_func(x)
+}
+
+my_summary(x, sd)
+
+```
+
+
+
+
+
+
