@@ -274,6 +274,7 @@ weather_nest %>%
 ```
 
 # napoleon again
+
 ```{r}
 napoleon = 
   tibble(
