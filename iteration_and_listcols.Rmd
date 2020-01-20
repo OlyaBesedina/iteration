@@ -37,6 +37,7 @@ l = list(vec_numeric = 5:8,
          mat         = matrix(1:8, 2, 4),
          vec_logical = c(TRUE, FALSE),
          summary     = summary(rnorm(1000)))
+
 ```
 
 ```{r}
@@ -88,11 +89,10 @@ mean_and_sd(df[[3]])
 mean_and_sd(df[[4]])
 ```
 
-create loops 
+# Create loops 
 
 ```{r}
 output = vector("list", length = 4)
-
 ```
 
 Create first loop
@@ -155,8 +155,6 @@ read_page_reviews = function(url) {
 ```{r}
 url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
 vec_urls = str_c(url_base, 1:5)
-
-vec_url = str_c(url_base, 1:5)
 
 read_page_reviews(vec_url[[1]])
 read_page_reviews(vec_url[[2]])

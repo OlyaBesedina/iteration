@@ -13,22 +13,23 @@ y = rnorm(n = 30, mean = 6, sd = .3)
 (x - mean (x)) / sd(x)
 ```
 
-    ##  [1] -1.0650087  0.5162744  1.2197401 -0.2378328  0.4585260 -1.1097325
-    ##  [7]  0.3123635 -0.9781389  2.0642461  0.9870695 -1.8587092 -0.4397817
-    ## [13] -1.5015575  0.0706886  0.2429724  0.6212064  1.3251087  0.1555759
-    ## [19]  0.1377664 -1.0519453  0.3696434 -2.3123534 -0.4425774  0.7397337
-    ## [25] -0.4861820  0.6117588  0.3297672  0.3560619  1.3561942 -0.3908777
+    ##  [1] -0.09242343  0.51525554  0.49141157  0.54243359 -0.73249455
+    ##  [6]  1.60480217 -1.55957403 -0.10003118  0.96883047  0.04132550
+    ## [11] -0.85903048 -1.71065867 -1.42225900 -0.15799907 -0.55620984
+    ## [16]  0.91223717 -0.97939691 -1.42548460 -0.72194688  0.07334746
+    ## [21] -1.24439322  1.66637686  0.32366628 -0.15106478  0.18106197
+    ## [26] -0.24080314  0.55396110  0.66651736  2.02778885  1.38475387
 
 ``` r
 (x_again - mean (x_again)) / sd(x_again)
 ```
 
-    ##  [1]  0.74149669  1.19269852 -1.73005195  0.58393737  0.25232781
-    ##  [6] -0.53047209 -0.32178453 -1.91390904  0.74980596 -0.04267836
-    ## [11] -0.22366173  1.19873541 -1.42012856  0.92343693  0.32419788
-    ## [16]  0.29488762 -0.04185599  0.54815236  1.45595907  0.22609752
-    ## [21]  0.44654757 -0.05927983 -2.67727935 -0.41567142 -0.56020668
-    ## [26]  0.86497749  0.97974334 -0.72595750 -1.03381843  0.91375394
+    ##  [1] -0.52702015 -0.42732294  0.30204426 -1.19078652  1.15638337
+    ##  [6]  0.18867463 -1.59666635  0.76209253 -1.00767104  0.38186635
+    ## [11]  2.36869969 -1.15547864  0.74543874  0.54031156 -0.18769176
+    ## [16]  2.13065653 -0.66505974 -0.82856226 -0.75442946 -0.74060974
+    ## [21] -1.22541058  0.24588037  1.29223553 -1.43386037  0.07594358
+    ## [26] -0.02506402  0.52783987  0.99145874 -0.28329933  0.33940714
 
 Now a function
 
@@ -59,6 +60,9 @@ z_score(x = iris)
 
 ## Multiple output
 
+If you want to create multiple output from one function you can orginize
+in in a tibble.
+
 ``` r
 mean_and_sd = function(input_x)
 {
@@ -76,7 +80,7 @@ mean_and_sd = function(input_x)
 }
 ```
 
-Thest the function
+Test the function
 
 ``` r
 mean_and_sd(input_x = x)
@@ -85,7 +89,7 @@ mean_and_sd(input_x = x)
     ## # A tibble: 1 x 2
     ##   mean_input sd_input
     ##        <dbl>    <dbl>
-    ## 1       3.63     2.23
+    ## 1       3.29     2.28
 
 # list - allows you to combine any number of things into one output structure
 
@@ -107,9 +111,27 @@ mean_and_sd_list = function(input_x)
 }
 ```
 
+``` r
+mean_and_sd_list(input_x = x)
+```
+
+    ## $mean_input
+    ## [1] 3.288199
+    ## 
+    ## $sd_input
+    ## [1] 2.276164
+    ## 
+    ## $z_score
+    ##  [1] -0.09242343  0.51525554  0.49141157  0.54243359 -0.73249455
+    ##  [6]  1.60480217 -1.55957403 -0.10003118  0.96883047  0.04132550
+    ## [11] -0.85903048 -1.71065867 -1.42225900 -0.15799907 -0.55620984
+    ## [16]  0.91223717 -0.97939691 -1.42548460 -0.72194688  0.07334746
+    ## [21] -1.24439322  1.66637686  0.32366628 -0.15106478  0.18106197
+    ## [26] -0.24080314  0.55396110  0.66651736  2.02778885  1.38475387
+
 # Multiple inputs
 
-y is relatd to x through the simple linear regression
+y is related to x through the simple linear regression
 
 ``` r
 sim_data = tibble(
@@ -122,7 +144,7 @@ sim_data %>%
   geom_point()
 ```
 
-<img src="writing_functions_files/figure-gfm/unnamed-chunk-7-1.png" width="90%" />
+<img src="writing_functions_files/figure-gfm/unnamed-chunk-8-1.png" width="90%" />
 
 ``` r
 ls_fit = lm(y ~ x, data = sim_data)
@@ -157,7 +179,7 @@ sim_regression(n = 3000, beta0 = 17, beta1 = -3)
     ## # A tibble: 1 x 2
     ##   beta0_hat beta1_hat
     ##       <dbl>     <dbl>
-    ## 1      17.0     -3.02
+    ## 1      17.0     -2.98
 
 ``` r
 # Can write in order without naming it
@@ -167,7 +189,7 @@ sim_regression(3000, beta0 = 24)
     ## # A tibble: 1 x 2
     ##   beta0_hat beta1_hat
     ##       <dbl>     <dbl>
-    ## 1      24.0      2.98
+    ## 1      24.0      3.02
 
 # Scrape lots of napoleon
 
@@ -229,72 +251,72 @@ read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_a
 ```
 
     ## # A tibble: 10 x 3
-    ##    title                   stars       text                                
-    ##    <chr>                   <chr>       <chr>                               
-    ##  1 "Gotta watch it!\n    … 5.0 out of… Super fun cult film. A must-see! Fu…
-    ##  2 "Great movie\n        … 5.0 out of… Love this movie.                    
-    ##  3 "Duh\n            "     5.0 out of… Best movie ever                     
-    ##  4 "Great video\n        … 5.0 out of… Product as described.  Great transa…
-    ##  5 "Give me some of your … 5.0 out of… This movie will always be my favori…
-    ##  6 "Nostalgic\n          … 5.0 out of… One of the best nostalgic movies of…
-    ##  7 "Make you giggle type … 5.0 out of… "I love, love, love this movie.  It…
-    ##  8 "This movie is so stup… 5.0 out of… No, really.  It's so stupid.  Your …
-    ##  9 "Hilarious\n          … 5.0 out of… Hilarious                           
-    ## 10 "Waste of money\n     … 1.0 out of… Terrible movie! Please don’t waste …
+    ##    title                           stars     text                          
+    ##    <chr>                           <chr>     <chr>                         
+    ##  1 "\n\n\n\n\n\n\n\n  \n  \n    H… 5.0 out … One of the greatest movies of…
+    ##  2 "\n\n\n\n\n\n\n\n  \n  \n    W… 5.0 out … What a classic! Love this mov…
+    ##  3 "\n\n\n\n\n\n\n\n  \n  \n    V… 5.0 out … and all your wildest dreams w…
+    ##  4 "\n\n\n\n\n\n\n\n  \n  \n    O… 5.0 out … Watched it a few times now, s…
+    ##  5 "\n\n\n\n\n\n\n\n  \n  \n    H… 5.0 out … Seen it 100 times bit couldn'…
+    ##  6 "\n\n\n\n\n\n\n\n  \n  \n    👍… 5.0 out … Good movie. So stupid funny! …
+    ##  7 "\n\n\n\n\n\n\n\n  \n  \n    S… 5.0 out … I actually bought this for my…
+    ##  8 "\n\n\n\n\n\n\n\n  \n  \n    C… 1.0 out … Wasnt aware this could be cha…
+    ##  9 "\n\n\n\n\n\n\n\n  \n  \n    I… 5.0 out … An offbeat refreshing diversi…
+    ## 10 "\n\n\n\n\n\n\n\n  \n  \n    C… 4.0 out … Classic
 
 ``` r
 read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=2")
 ```
 
     ## # A tibble: 10 x 3
-    ##    title                       stars      text                             
-    ##    <chr>                       <chr>      <chr>                            
-    ##  1 "Good movie\n            "  5.0 out o… Funny                            
-    ##  2 "A classic\n            "   5.0 out o… I like your sleeves. They're rea…
-    ##  3 "FRIKKEN SWEET MOVIE, GAWS… 5.0 out o… It’s Napolean Dynamite. It’s cha…
-    ##  4 "You gonna eat the rest of… 5.0 out o… One of my favorite movies ever. …
-    ##  5 "Tina you fat lard come ge… 5.0 out o… It's a great movie               
-    ##  6 "Great family movie\n     … 5.0 out o… My kids as well as the adults lo…
-    ##  7 "Teens love it\n          … 5.0 out o… Original and funny               
-    ##  8 "Great\n            "       5.0 out o… Funny                            
-    ##  9 "Great Movie, Bad Packagin… 4.0 out o… First off, the stick-on label on…
-    ## 10 "jeez napoleon\n          … 5.0 out o… gosh
+    ##    title                         stars      text                           
+    ##    <chr>                         <chr>      <chr>                          
+    ##  1 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… Cant explain. Love this movie. 
+    ##  2 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… One of my favorite go to movies
+    ##  3 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… Great movie                    
+    ##  4 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… It came quickly delivered by a…
+    ##  5 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… ❤️👊❤️👊Still one of my top movi…
+    ##  6 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… It’s about time my kids watche…
+    ##  7 "\n\n\n\n\n\n\n\n  \n  \n   … 4.0 out o… It is a funny movie. The film …
+    ##  8 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… Exactly what I expected        
+    ##  9 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… Good                           
+    ## 10 "\n\n\n\n\n\n\n\n  \n  \n   … 5.0 out o… Good movie
 
 ``` r
 read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=3")
 ```
 
     ## # A tibble: 10 x 3
-    ##    title                     stars       text                              
-    ##    <chr>                     <chr>       <chr>                             
-    ##  1 "👍\n            "        5.0 out of… 👍                                
-    ##  2 "A classic!\n           … 5.0 out of… A classic movie.  Hilarious!      
-    ##  3 "A must own\n           … 5.0 out of… Great movie                       
-    ##  4 "If you like 80s ...you … 5.0 out of… My all time favorite movie. I hav…
-    ##  5 "🤘\n            "        5.0 out of… 🤘                                
-    ##  6 "Super Slow Mooovie...\n… 1.0 out of… Too slow and too damn quiet... My…
-    ##  7 "Awesome!\n            "  5.0 out of… Love this movie !                 
-    ##  8 "Very funny\n           … 4.0 out of… Very funny                        
-    ##  9 "Eat your food tina\n   … 5.0 out of… Cant go wrong                     
-    ## 10 "Dumb funny\n           … 5.0 out of… Dumb funny
+    ##    title                           stars     text                          
+    ##    <chr>                           <chr>     <chr>                         
+    ##  1 "\n\n\n\n\n\n\n\n  \n  \n    M… 5.0 out … The Steak to the face bike ri…
+    ##  2 "\n\n\n\n\n\n\n\n  \n  \n    F… 5.0 out … I did not know what I was mis…
+    ##  3 "\n\n\n\n\n\n\n\n  \n  \n    P… 5.0 out … Just what I wanted.           
+    ##  4 "\n\n\n\n\n\n\n\n  \n  \n    N… 4.0 out … A throwback of weird funny ou…
+    ##  5 "\n\n\n\n\n\n\n\n  \n  \n    N… 4.0 out … Its okay                      
+    ##  6 "\n\n\n\n\n\n\n\n  \n  \n    A… 1.0 out … Don't waste your money or you…
+    ##  7 "\n\n\n\n\n\n\n\n  \n  \n    I… 5.0 out … you have to watch it!         
+    ##  8 "\n\n\n\n\n\n\n\n  \n  \n    V… 4.0 out … Good movie                    
+    ##  9 "\n\n\n\n\n\n\n\n  \n  \n    F… 5.0 out … So funny... old, but funy     
+    ## 10 "\n\n\n\n\n\n\n\n  \n  \n    F… 5.0 out … This is a niche movie for adu…
 
 ``` r
 read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=4")
 ```
 
     ## # A tibble: 10 x 3
-    ##    title                         stars      text                           
-    ##    <chr>                         <chr>      <chr>                          
-    ##  1 "Annoying! Not in a good way… 1.0 out o… I know that I am one of the ve…
-    ##  2 "Fun\n            "           5.0 out o… Fun                            
-    ##  3 "such a great movie\n       … 5.0 out o… a true comedy classic          
-    ##  4 "Napoleon Dud\n            "  3.0 out o… Not impressed w/movie.         
-    ##  5 "Five stars\n            "    5.0 out o… Such a weird, awesome movie    
-    ##  6 "Fun!\n            "          5.0 out o… Great movie                    
-    ##  7 "Funny movie- bravo for Amaz… 5.0 out o… My son loves this movie, so I …
-    ##  8 "Movie\n            "         5.0 out o… Movie                          
-    ##  9 "Funny movie, quotable lines… 5.0 out o… My kids quote this movie all t…
-    ## 10 "Great for teenagers!\n     … 5.0 out o… My students loved this movie.
+    ##    title                           stars     text                          
+    ##    <chr>                           <chr>     <chr>                         
+    ##  1 "\n\n\n\n\n\n\n\n  \n  \n    A… 5.0 out … Vote for Pedro and buy a key-…
+    ##  2 "\n\n\n\n\n\n\n\n  \n  \n    A… 5.0 out … I bought it so I can show eac…
+    ##  3 "\n\n\n\n\n\n\n\n  \n  \n    I… 5.0 out … Become one with your inner ne…
+    ##  4 "\n\n\n\n\n\n\n\n  \n  \n    G… 5.0 out … I shared this movie with my y…
+    ##  5 "\n\n\n\n\n\n\n\n  \n  \n    B… 5.0 out … This is the best movie of all…
+    ##  6 "\n\n\n\n\n\n\n\n  \n  \n    g… 5.0 out … this movie is really funny hi…
+    ##  7 "\n\n\n\n\n\n\n\n  \n  \n    P… 5.0 out … Everything                    
+    ##  8 "\n\n\n\n\n\n\n\n  \n  \n    C… 5.0 out … Classic movie and hilarious!!!
+    ##  9 "\n\n\n\n\n\n\n\n  \n  \n    I… 5.0 out … Great movie...classic         
+    ## 10 "\n\n\n\n\n\n\n\n  \n  \n    G… 5.0 out … Great quality.
 
 # Lord of the rings data
 
@@ -349,4 +371,4 @@ my_summary = function(x, summ_func) {
 my_summary(x, sd)
 ```
 
-    ## [1] 0.8358458
+    ## [1] 0.9447517

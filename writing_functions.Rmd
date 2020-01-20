@@ -71,6 +71,7 @@ z_score(x = iris)
 ```
 
 ## Multiple output
+If you want to create multiple output from one function you can orginize in in a tibble.
 
 ```{r}
 mean_and_sd = function(input_x)
@@ -90,7 +91,7 @@ mean_and_sd = function(input_x)
 
 ```
 
-Thest the function
+Test the function
 ```{r}
 mean_and_sd(input_x = x)
 ```
@@ -115,9 +116,13 @@ mean_and_sd_list = function(input_x)
 
 ```
 
+```{r}
+mean_and_sd_list(input_x = x)
+```
+
 # Multiple inputs
 
-y is relatd to x through the simple linear regression
+y is related to x through the simple linear regression
 
 ```{r}
 sim_data = tibble(
@@ -270,6 +275,7 @@ lotr_tidy =
     lotr_load_and_tidy("./data/LotR_Words.xlsx", "J3:L6", "return_king")) %>%
   select(movie, everything()) 
 ```
+
 
 ```{r}
 x = rnorm(25, 0, 1)
